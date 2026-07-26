@@ -1,0 +1,256 @@
+/* ============================================================================
+   EthereumRock, clean archival theme.
+   System fonts only (nothing downloaded). Three-colour palette: paper #efeeea,
+   ink #22231e, indigo #282878 for anything actionable; everything else is a
+   derived tint of those. Progressive: the markup is plain semantic HTML, so if
+   this stylesheet never loads the app is still fully usable. Nothing here is
+   load-bearing for behaviour.
+   ============================================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* system stacks, no @font-face, no external request */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* base palette (the three) */
+  --bg: #efeeea;
+  --ink: #22231e;
+  --accent: #282878;
+
+  /* derived from the three (mixes/tints, no new hues) */
+  --ink-2: #70706c;   /* muted text  */
+  --ink-3: #9d9d98;   /* faint text  */
+  --line: #dad9d3;    /* hairline    */
+  --line-2: #c3c2bc;  /* stronger rule */
+  --surface: #f6f5f1; /* raised card, a hair lighter than paper */
+  --surface-2: #e7e6e0; /* inset / zebra, a hair darker */
+  --accent-2: #1b1b5e;   /* pressed / hover-dark indigo */
+  --accent-wash: #e1e0ec; /* light indigo fill for active + hover */
+  --on-accent: #f4f3ef;   /* text on an indigo fill */
+
+  --radius: 0;
+  --radius-sm: 0;
+  --wrap: 76rem;
+  --shadow-sm: 0 1px 2px rgba(34, 35, 30, 0.05);
+  --shadow: 0 6px 22px -10px rgba(34, 35, 30, 0.22);
+}
+
+/* ---- reset / base ----------------------------------------------------------- */
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--accent-wash); }
+
+main {
+  display: block;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3.5rem;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-sans); color: var(--ink); margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(1.9rem, 1.4rem + 2vw, 2.7rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+h2 { font-size: 1.3rem; font-weight: 650; letter-spacing: -0.01em; }
+h3 { font-size: 1.02rem; font-weight: 650; }
+
+p { margin: 0 0 0.9rem; }
+small { font-size: 0.82rem; color: var(--ink-2); }
+strong { font-weight: 650; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-2); text-decoration: underline; text-underline-offset: 2px; }
+
+code, kbd, samp { font-family: var(--font-mono); font-size: 0.9em; }
+
+/* an "eyebrow" label style, reused for section kickers and trait keys */
+.eyebrow, dt, thead th {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-2);
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---- controls --------------------------------------------------------------- */
+button, input, select, textarea { font: inherit; color: var(--ink); }
+
+button {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 550;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s, color 0.12s, transform 0.04s;
+}
+button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+button:active:not(:disabled) { transform: translateY(1px); }
+/* disabled: a plain gray body with dark, still-readable text (no washed-out fade) */
+button:disabled {
+  background: #d8d7d0;
+  color: #45443d;
+  border-color: #c7c6bf;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary call to action: solid indigo. The rule, so this stays coherent as buttons get added:
+   indigo marks the one action a card or section exists to perform, and there is never more than
+   one per group. Everything else stays white: the alternative or undo sitting next to it (Cancel
+   listing), buttons that only read data (Load history, Load my rocks, Refresh), and the manual
+   recovery steps under Advanced, which are deliberately quiet. */
+.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.primary:hover:not(:disabled) { background: var(--accent-2); border-color: var(--accent-2); color: var(--on-accent); }
+
+input, select, textarea {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.55rem;
+}
+input:hover, select:hover { border-color: var(--ink-3); }
+input:focus-visible, select:focus-visible { border-color: var(--accent); }
+input::placeholder { color: var(--ink-3); }
+
+/* ---- tables ----------------------------------------------------------------- */
+table { border-collapse: collapse; width: 100%; }
+table[border] { border: 0; }
+th, td { padding: 0.6rem 0.7rem; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--line); }
+thead th { border-bottom: 1.5px solid var(--line-2); white-space: nowrap; }
+
+/* ---- definition lists ------------------------------------------------------- */
+dl { margin: 0; }
+dd { margin: 0; font-family: var(--font-mono); }
+
+/* ---- details ---------------------------------------------------------------- */
+details {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  margin: 1rem 0;
+  background: var(--surface);
+}
+summary { cursor: pointer; font-weight: 600; }
+summary:hover { color: var(--accent); }
+
+/* ---- action cards ------------------------------------------------------------ */
+/* One box per action: what it does on top, then a single row with the inputs on the
+   left and the buttons that act on them on the right. Because each card carries its
+   own explanation, an action needs no separate tooltip. Every page that offers
+   actions repeats this, so the rules live here rather than in each route. Selectors
+   are scoped to .action-card so none of these common names leak into a route that
+   already has its own .row or .note. */
+.action-card {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.85rem 1.05rem;
+  margin: 0 0 0.8rem;
+}
+.action-card > :last-child { margin-bottom: 0; }
+.action-card .note { margin: 0 0 0.75rem; font-size: 0.82rem; color: var(--ink-2); }
+.action-card .note.bad { color: #b23a2a; } /* same red as the wrong-network dot */
+.action-card .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem 1.25rem; }
+.action-card .row + .note { margin: 0.65rem 0 0; }
+.action-card .fields { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.9rem; }
+.action-card .fields label { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
+.action-card .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+/* buttons ride the right edge when there is something to their left; a card with no
+   inputs keeps its button where the reading starts */
+.action-card .fields + .actions { margin-left: auto; }
+
+/* An inline failure message. With no toast layer, this is how a failed action reports, placed in
+   the card that raised it so the message sits where the user clicked. */
+.failed {
+  margin: 0.65rem 0 0;
+  font-size: 0.82rem;
+  color: #b23a2a; /* same red as the wrong-network dot */
+  overflow-wrap: anywhere;
+}
+
+/* ---- shared bits ------------------------------------------------------------ */
+.mono { font-family: var(--font-mono); }
+.muted { color: var(--ink-2); }
+
+/* The page header row: title on the left, whatever acts on the whole page on the right. Every page
+   that reads the chain carries a Refresh here, so this lives once rather than in each route. */
+.head { display: flex; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.head .controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.head .controls label { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+/* the gallery of rock tiles, and the pager under it. Global rather than scoped because the market
+   and the account holdings both use them, and they have to stay the same grid. */
+.rock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1.1rem; }
+.pager { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+.pager .where { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-2); }
+
+/* ---- phones ------------------------------------------------------------------ */
+/* One column, and every action card turns into fields-then-full-width-buttons. The rule the desktop
+   layout leans on, `.fields + .actions { margin-left: auto }`, is what breaks down here: once the
+   fields wrap onto their own line the button is left hanging against the right edge, detached from
+   the thing it acts on. So on a phone the buttons take the row instead. */
+@media (max-width: 560px) {
+  main { padding: 1.6rem 1.1rem 2.5rem; }
+
+  h2 { font-size: 1.2rem; }
+
+  /* title on one line, everything that acts on the page on its own row underneath */
+  .head { gap: 0.8rem; margin-bottom: 1.15rem; }
+  .head .controls { width: 100%; gap: 0.7rem 1rem; }
+
+  .action-card { padding: 0.8rem 0.9rem; }
+  .action-card .fields { width: 100%; }
+  .action-card .fields label { width: 100%; }
+  /* inputs share what the labels leave, rather than sitting at a browser default width that has
+     nothing to do with how many characters go in them (`size` is ignored on type=number) */
+  .action-card .fields input:not([type="checkbox"]),
+  .action-card .fields select { flex: 1 1 6rem; min-width: 0; max-width: 12rem; }
+  .action-card .fields + .actions { margin-left: 0; }
+  .action-card .actions { width: 100%; }
+  .action-card .actions button { flex: 1 1 8rem; }
+
+  /* two tiles across. At one per row a seven-rock gallery is seven screens of scrolling. */
+  .rock-grid { grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
+
+  .pager { gap: 0.6rem; margin-top: 1.5rem; }
+  details { padding: 0.6rem 0.85rem; }
+}
+
+/* ---- touch ------------------------------------------------------------------- */
+/* Keyed to the pointer, not the width, because this is about fingers rather than screens.
+   16px inputs are load-bearing on iOS: anything smaller makes Safari zoom the page on focus. */
+@media (pointer: coarse) {
+  button { padding: 0.55rem 0.95rem; }
+  input, select, textarea { font-size: 16px; }
+  summary { padding: 0.15rem 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

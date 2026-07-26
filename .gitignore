@@ -1,0 +1,20 @@
+# Secrets. This repo configures no keys and no public networks, so there should never be anything
+# here to ignore. The patterns stay as a backstop.
+.env
+.env.*
+!.env.example
+*.key
+secrets.json
+*.log
+
+# Dependencies
+node_modules/
+
+# Build output, all regenerable from source
+artifacts/
+cache/
+types/
+
+# Editor / OS
+.DS_Store
+*.swp
