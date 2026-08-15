@@ -1,22 +1,20 @@
 ```
       ##
-      ####          E T H E R E U M R O C K
+      ####          ETHEREUMROCK
     ########
-    ########        a fully on-chain wrapper for EtherRock v1, 2017
-    ########
-      ######
+    ########        an on-chain wrapper for EtherRock v1, 2017
+    ########      + a fully on-chain frontend
+      ######      # an on-chain marketplace with no fees
 ```
 
 # EthereumRock
 
-An ERC-721 wrapper for **EtherRock v1** (`0x37504AE0282f5f334ED29b4548646f887977b7cC`), plus a
-zero-fee market for the wrapped rocks. The Art and metadata are generated on chain.
-
-This repo is contracts, tests and the frontend.
+EthereumRock is an ERC-721 wrapper for **EtherRock v1** (`0x37504AE0282f5f334ED29b4548646f887977b7cC`), as well as a
+zero-fee marketplace. The Art and metadata are generated on chain as well! :D
 
 ## Why
 
-EtherRock launched 26 December 2017 as one of the first NFTs on mainnet. Seventeen hours earlier the
+EtherRock launched 26 December 2017 as one of the first NFTs on mainnet. Roughly ~17 hours earlier the
 same developer had deployed a buggy version and replaced it the next morning. That one is v1.
 
 It was meant to be a hundred rocks. A mistyped `=` in `buyRock` left every rock permanently for sale
@@ -25,23 +23,22 @@ is why v1 has thousands of rocks and why anyone outside the first hundred owns o
 
 Both EtherRock contracts predate ERC-721, so no wallet or marketplace can show them without a
 wrapper. The 2021 attempt shipped as *two* contracts, ids 0-99 and 100-9999, splitting collectors
-into an elite hundred and everyone else. The developer had disowned v1 by then, its collection was
-delisted and the whole thing was abandoned again.
+into an elite hundred and everyone else. The original EtherRock developer had disowned v1 by then, its infra was
+taken down and the whole thing was abandoned again.
 
 ## What's different here
 
-- **One wrapper for all 10,000 ids.**
-- **Nobody owns it.** No owner, pause, fee switch, proxy, or admin function. `renderer` is
-  `immutable`, so the art can never be swapped.
-- **Supply can shrink to the hundred that were intended.** `merge` burns the higher id into the
+- **One wrapper for the first 10,000 ids.** (homage to the CryptoPunks max supply)
+- **Nobody owns it.** No owner, pause, fee switch, proxy, or admin function. The art `renderer` is
+  also `immutable`, so the art can never be swapped.
+- **Supply can shrink to the initial hundred that were intended.** `merge` burns the higher id into the
   lower, which keeps both masses. Ids 0-99 can never burn, so consolidation stops at the original
-  hundred. You pick which rock's art survives, or reroll. Nothing rewards merging, so it is the
-  collectors' call.
+  hundred. You pick which rock's art survives, or reroll. Nothing really rewards merging, so it is the collectors call if they want to help consolidate.
 - **The Art is being generated on chain.** Unlike EtherRock or the split wrapper, the art and metadata is being fully generated on chain for each rock separately.
 - **The website is on chain too.** `EthereumRockSite` stores one self-contained `index.html` in
-  SSTORE2 chunks and served via ERC-8244 `html()` and web3://.
+  SSTORE2 chunks and served via ERC-8244 `html()` (made by Ross yippie) and web3://.
 
-## Wrapping, and the bug it has to survive
+## How Wrapping works and the initial V1 bug
 
 `buyRock` still works on v1, and an unpriced rock is priced at zero.
 
@@ -63,11 +60,10 @@ calls `wrap(id)`.
 
 ## Market
 
-`EthereumRockMarket` is optional and standalone but has 0 fees and is immutable.
+`EthereumRockMarket` is optional and standalone but has 0 fees, is immutable and is up as long as Ethereum lives.
 
 - `list` / `buy` at a fixed price with an expiry, or `listTo` for a private sale.
-- Offers escrow ETH. Being outbid refunds you. Raising your own bid is a top-up, so 10 to 20 costs
-  10, not another 20.
+- Offers escrow ETH. Being outbid refunds you. Raising your own bid is a top-up.
 - Paying a **third party** is pull-based (`pendingWithdrawals` + `withdraw()`): a push at an address
   that reverts on receive would brick someone else's transaction, with no owner to rescue it. Your
   **own** bid pays out directly, since refusing there only fails your own call.
@@ -86,7 +82,7 @@ contracts/
   EthereumRockRenderer.sol   on-chain art and metadata
   EthereumRockSite.sol       the frontend, stored on chain
   mocks/                     tests only: a stand-in v1, the 2021 wrappers, hostile receivers
-frontend/                    Svelte 5, no backend, builds to one self-contained index.html
+frontend/                    Svelte 5 builds to index.html
 artBuildingBlocks/           the 8x8 source art the renderer and the page both draw from
 test/                        *.ts drives the contracts, *.mjs drives the frontend's codec
 ```
@@ -103,6 +99,17 @@ cd frontend && pnpm install && pnpm build
 
 Point it at a deployment in `frontend/src/config.js`, which also carries the mainnet addresses to
 restore for a real build.
+
+Addresses render as their [`.gwei`](https://gwei.domains) name where they have one: the account chip
+in the nav bar, a rock's `Owner`, the seller and buyer columns of its price history. Your own address
+reads as `you`. The private-sale buyer and the transfer recipient take a name too, resolve it, and
+print the address it resolved to before you sign, so a typo stops at the form instead of at the
+wallet.
+
+Reverse resolution is one `eth_call` per address (`reverseResolve` on the Gwei Name Service
+`NameNFT`), cached for the session, with no namehash in the bundle. Zero `gns` in the config and every
+lookup is skipped, while a call that fails falls back to the raw address. Nothing depends on a name
+resolving.
 
 ## Tests
 
