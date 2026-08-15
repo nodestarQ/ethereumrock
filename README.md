@@ -125,12 +125,25 @@ FORK=1 MAINNET_RPC_URL=<archive rpc> npx hardhat test test/EthereumRock.fork.tes
 
 ## Deploy
 
+Live on mainnet:
+
+| contract | address |
+| --- | --- |
+| `EthereumRock` | `0x225Fa3Fa8e8f4C2a692a906C262FADf31aBFd732` |
+| `EthereumRockMarket` | `0xEc41811f709711eC846173974EF0b058813c85d7` |
+| `EthereumRockRenderer` | `0xAD76d0A38f436Fb1e31Fa14E380dc89bFc700318` |
+| `EthereumRockSite` | `0x6485B8B75a8Ad382340ABE333E1f6EE10E39f818` |
+
+`eth_call` the site at `0x33c34ac3` (`html()`) and the whole app comes back in one response.
+
+Constructor arguments:
+
 | `EthereumRock` argument | mainnet |
 | --- | --- |
 | `rocks_` | `0x37504AE0282f5f334ED29b4548646f887977b7cC` EtherRock v1 |
 | `wrapperSub100_` | `0xb895cAffECb62B5E49828c9d64116Fd07Dd33DEF` GenesisRocks 0-99 |
 | `wrapper10k_` | `0x39b780E8062CE299ab60ed3D48F447e97511a2eD` GenesisRocks10000 |
-| `renderer_` | the renderer deployed alongside |
+| `renderer_` | `0xAD76d0A38f436Fb1e31Fa14E380dc89bFc700318` EthereumRockRenderer |
 
 `rocks_` is immutable, so a deployment pointed at a mock is pointed at a mock forever. No testnet has
 a real EtherRock, which is what `contracts/mocks/` is for. The optimizer run count is part of the
